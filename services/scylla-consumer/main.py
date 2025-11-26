@@ -1,4 +1,4 @@
-# FILE: services/scylla-consumer/main.py
+# FILE: services/scylla-consumer/main.py (FIXED)
 # ScyllaDB Consumer - Stores usage data in ScyllaDB
 
 from cassandra.cluster import Cluster
@@ -6,6 +6,7 @@ from cassandra.query import BatchStatement
 from kafka import KafkaConsumer
 import json
 import logging
+import os
 from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
@@ -120,8 +121,8 @@ class ScyllaDBConsumer:
             self.cluster.shutdown()
 
 if __name__ == "__main__":
-    scylla_hosts = ['localhost']
-    kafka_brokers = ['localhost:19092', 'localhost:29092', 'localhost:39092']
+    scylla_hosts = os.getenv('SCYLLA_HOSTS', 'localhost').split(',')
+    kafka_brokers = os.getenv('KAFKA_BROKERS', 'localhost:19092,localhost:29092,localhost:39092').split(',')
     
     consumer = ScyllaDBConsumer(scylla_hosts, kafka_brokers)
     consumer.consume_and_store()

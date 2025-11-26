@@ -1,4 +1,4 @@
-# FILE: services/cdr-ingestion/main.py
+# FILE: services/cdr-ingestion/main.py (FIXED)
 # CDR Ingestion Service - Downloads CDR files from SFTP and streams to Redpanda
 
 import paramiko
@@ -7,6 +7,7 @@ from kafka import KafkaProducer
 import json
 import logging
 import time
+import os
 from io import StringIO
 
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +35,8 @@ class CDRIngestion:
             hostname=self.sftp_config['host'],
             port=self.sftp_config['port'],
             username=self.sftp_config['username'],
-            password=self.sftp_config['password']
+            password=self.sftp_config['password'],
+            disabled_algorithms={'keys': ['rsa-sha2-256', 'rsa-sha2-512']}
         )
         return ssh.open_sftp()
     
@@ -100,15 +102,17 @@ class CDRIngestion:
         self.producer.close()
 
 if __name__ == "__main__":
+    # Read from environment variables
     sftp_config = {
-        'host': 'localhost',
-        'port': 10022,
-        'username': 'cdr_data',
-        'password': 'password'
+        'host': os.getenv('SFTP_HOST', 'localhost'),
+        'port': int(os.getenv('SFTP_PORT', '10022')),
+        'username': os.getenv('SFTP_USER', 'cdr_data'),
+        'password': os.getenv('SFTP_PASSWORD', 'password')
     }
     
+    kafka_brokers = os.getenv('KAFKA_BROKERS', 'localhost:19092,localhost:29092,localhost:39092').split(',')
     kafka_config = {
-        'brokers': ['localhost:19092', 'localhost:29092', 'localhost:39092']
+        'brokers': kafka_brokers
     }
     
     ingestion = CDRIngestion(sftp_config, kafka_config)

@@ -1,5 +1,5 @@
 -- FILE: pgsql/init.sql
--- PostgreSQL initialization script with CDC configuration
+-- PostgreSQL initialization script with CDC configuration (FIXED)
 
 -- Initialize databases and schemas
 
@@ -13,7 +13,7 @@ CREATE DATABASE wtc_analytics;
 CREATE DATABASE airflow;
 
 -- Connect to wtc_prod and set up CRM schemas
-\c wtc_prod;
+\c wtc_prod
 
 -- Create CRM schema
 CREATE SCHEMA IF NOT EXISTS crm_system;
@@ -55,7 +55,7 @@ CREATE PUBLICATION debezium_publication FOR TABLE
     crm_system.devices;
 
 -- Connect to wtc_analytics and set up schemas
-\c wtc_analytics;
+\c wtc_analytics
 
 -- Create schemas for analytics
 CREATE SCHEMA IF NOT EXISTS cdr_data;

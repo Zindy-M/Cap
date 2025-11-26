@@ -1,4 +1,4 @@
-# FILE: services/stream-processor/main.py
+# FILE: services/stream-processor/main.py (FIXED)
 # Stream Processor - Aggregates CDR data in real-time
 
 from kafka import KafkaConsumer, KafkaProducer
@@ -6,6 +6,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 import json
 import logging
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -147,6 +148,6 @@ class CDRStreamProcessor:
             self.consumer.close()
 
 if __name__ == "__main__":
-    kafka_brokers = ['localhost:19092', 'localhost:29092', 'localhost:39092']
+    kafka_brokers = os.getenv('KAFKA_BROKERS', 'localhost:19092,localhost:29092,localhost:39092').split(',')
     processor = CDRStreamProcessor(kafka_brokers)
     processor.run()

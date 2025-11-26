@@ -1,4 +1,4 @@
-# FILE: services/usage-api/main.py
+# FILE: services/usage-api/main.py (FIXED)
 # Usage API - REST API for querying usage data
 
 from flask import Flask, request, jsonify
@@ -6,6 +6,7 @@ from flask_httpauth import HTTPBasicAuth
 from cassandra.cluster import Cluster
 from datetime import datetime
 import logging
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -13,9 +14,12 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
-# Basic auth credentials (in production, use proper authentication)
+# Basic auth credentials from environment
+API_USER = os.getenv('API_USER', 'api_user')
+API_PASSWORD = os.getenv('API_PASSWORD', 'api_password')
+
 USERS = {
-    "api_user": "api_password"
+    API_USER: API_PASSWORD
 }
 
 @auth.verify_password
@@ -83,7 +87,8 @@ class UsageAPI:
         }, None
 
 # Initialize API
-api = UsageAPI(['localhost'])
+scylla_hosts = os.getenv('SCYLLA_HOSTS', 'localhost').split(',')
+api = UsageAPI(scylla_hosts)
 
 @app.route('/data_usage', methods=['GET'])
 @auth.login_required
@@ -115,4 +120,5 @@ def health():
     return jsonify({"status": "healthy"}), 200
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=18089, debug=False)
+    port = int(os.getenv('API_PORT', '18089'))
+    app.run(host='0.0.0.0', port=port, debug=False)

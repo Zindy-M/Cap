@@ -1,5 +1,5 @@
 # FILE: docker-compose.yml
-# Docker Compose configuration for entire project
+# Docker Compose configuration for entire project (FIXED)
 
 version: '3.8'
 
@@ -321,8 +321,8 @@ services:
     networks:
       - wtc_cap_one
     depends_on:
-      - redpanda-0
-      - cdr-ingestion
+      redpanda-0:
+        condition: service_healthy
     restart: unless-stopped
 
   scylla-consumer:
@@ -336,8 +336,8 @@ services:
     depends_on:
       scylla:
         condition: service_healthy
-      stream-processor:
-        condition: service_started
+      redpanda-0:
+        condition: service_healthy
     restart: unless-stopped
 
   usage-api:

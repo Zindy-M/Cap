@@ -1,5 +1,5 @@
 -- FILE: dbt/models/prepared_layers/forex_ohlc_indicators.sql
--- Forex Data - 1: OHLC summaries with technical indicators
+-- Forex Data - 1: OHLC summaries with technical indicators (FIXED)
 
 {{ config(
     materialized='table',
@@ -16,7 +16,6 @@ WITH tick_data AS (
     FROM forex_data.forex_ticks
 ),
 
--- M1 (1 minute) candles
 m1_candles AS (
     SELECT 
         pair_name,
@@ -45,7 +44,6 @@ m1_distinct AS (
     FROM m1_candles
 ),
 
--- M30 (30 minute) candles
 m30_candles AS (
     SELECT 
         pair_name,
@@ -75,7 +73,6 @@ m30_distinct AS (
     FROM m30_candles
 ),
 
--- H1 (1 hour) candles
 h1_candles AS (
     SELECT 
         pair_name,
@@ -103,10 +100,14 @@ h1_distinct AS (
     FROM h1_candles
 ),
 
--- Calculate EMA and ATR for M1
 m1_with_indicators AS (
     SELECT 
-        *,
+        pair_name,
+        candle_time,
+        open_price,
+        high_price,
+        low_price,
+        close_price,
         'M1' as timeframe,
         AVG(open_price) OVER (
             PARTITION BY pair_name 
@@ -131,10 +132,14 @@ m1_with_indicators AS (
     FROM m1_distinct
 ),
 
--- Calculate EMA and ATR for M30
 m30_with_indicators AS (
     SELECT 
-        *,
+        pair_name,
+        candle_time,
+        open_price,
+        high_price,
+        low_price,
+        close_price,
         'M30' as timeframe,
         AVG(open_price) OVER (
             PARTITION BY pair_name 
@@ -159,10 +164,14 @@ m30_with_indicators AS (
     FROM m30_distinct
 ),
 
--- Calculate EMA and ATR for H1
 h1_with_indicators AS (
     SELECT 
-        *,
+        pair_name,
+        candle_time,
+        open_price,
+        high_price,
+        low_price,
+        close_price,
         'H1' as timeframe,
         AVG(open_price) OVER (
             PARTITION BY pair_name 
@@ -187,7 +196,6 @@ h1_with_indicators AS (
     FROM h1_distinct
 )
 
--- Combine all timeframes
 SELECT * FROM m1_with_indicators
 UNION ALL
 SELECT * FROM m30_with_indicators

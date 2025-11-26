@@ -1,4 +1,4 @@
-# FILE: services/persistence/main.py
+# FILE: services/persistence/main.py (FIXED)
 # Persistence Service - Stores all Kafka data to PostgreSQL
 
 from kafka import KafkaConsumer
@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, Table, Column, Integer, String, BigInteger
 from sqlalchemy.dialects.postgresql import insert
 import json
 import logging
+import os
 from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
@@ -216,8 +217,15 @@ class PersistenceService:
             consumer.close()
 
 if __name__ == "__main__":
-    db_url = "postgresql://postgres:postgres@localhost:15432/wtc_analytics"
-    kafka_brokers = ['localhost:19092', 'localhost:29092', 'localhost:39092']
+    # Build database URL from environment variables
+    pg_host = os.getenv('POSTGRES_HOST', 'localhost')
+    pg_port = os.getenv('POSTGRES_PORT', '15432')
+    pg_user = os.getenv('POSTGRES_USER', 'postgres')
+    pg_password = os.getenv('POSTGRES_PASSWORD', 'postgres')
+    pg_db = os.getenv('POSTGRES_DB', 'wtc_analytics')
+    
+    db_url = f"postgresql://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_db}"
+    kafka_brokers = os.getenv('KAFKA_BROKERS', 'localhost:19092,localhost:29092,localhost:39092').split(',')
     
     service = PersistenceService(db_url, kafka_brokers)
     service.run()
