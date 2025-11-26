@@ -1,0 +1,8 @@
+# FILE: services/cdr-ingestion/requirements.txt
+# Python dependencies for CDR Ingestion Service
+
+paramiko==3.4.0
+kafka-python==2.0.2
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-mock==3.12.0

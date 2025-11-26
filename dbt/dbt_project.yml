@@ -1,0 +1,27 @@
+# dbt_project.yml
+# FILE: dbt/dbt_project.yml
+# DBT project configuration
+
+name: 'wtc_analytics'
+version: '1.0.0'
+config-version: 2
+
+profile: 'wtc_analytics'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  wtc_analytics:
+    prepared_layers:
+      +materialized: table
+      +schema: prepared_layers

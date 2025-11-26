@@ -1,0 +1,95 @@
+# FILE: .gitignore
+# Git ignore file for the project
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.hypothesis/
+
+# DBT
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/
+dbt/.user.yml
+
+# Docker
+volumes/data/
+volumes/logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.old
+
+# Data files (keep structure, ignore data)
+*.csv
+*.json
+*.parquet
+!docker-compose.yml
+!package.json
+!dbt_project.yml
+!profiles.yml
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Compiled files
+*.pyc
+*.pyo
+
+# Distribution
+*.tar.gz
+*.zip
+*.egg
+
+# IDE specific
+.vscode/settings.json
+.idea/workspace.xml

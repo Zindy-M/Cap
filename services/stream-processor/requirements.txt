@@ -1,0 +1,8 @@
+# FILE: services/stream-processor/requirements.txt
+# Python dependencies for Stream Processor Service
+
+kafka-python==2.0.2
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+python-dateutil==2.8.2

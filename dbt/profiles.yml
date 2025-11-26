@@ -1,0 +1,16 @@
+# FILE: dbt/profiles.yml
+# DBT connection profiles
+
+wtc_analytics:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      port: 15432
+      user: postgres
+      password: postgres
+      dbname: wtc_analytics
+      schema: prepared_layers
+      threads: 4
+      keepalives_idle: 0
